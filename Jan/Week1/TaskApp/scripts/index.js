@@ -14,6 +14,8 @@ const listAllTasks = document.querySelector(".listAllTasks");
 // List all pending tasks
 const pendingTasksPage = document.querySelector(".pendingTasksPage");
 
+// List all completed tasks
+const doneTasksPage = document.querySelector(".doneTasksPage");
 
 let tasksArray = [];
 
@@ -88,6 +90,34 @@ const listAllPendingTasks = () => {
   }
 }
 
+// function to list all completed tasks
+const listAllCompletedTasks = () => {
+  doneTasksPage.innerHTML = "";
+
+  if (tasksArray.length > 0) {
+    tasksArray.filter((task) => {
+      if(task.status === true) {
+        const taskItem = document.createElement("div");
+        taskItem.classList.add("task-item", "mb-3", "p-3", "border", "rounded");
+
+        taskItem.innerHTML = `
+          <h5>${task.title}</h5>
+          <p>${task.description}</p>
+          <p><strong>Deadline:</strong> ${task.deadline}</p>
+          <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
+        `;
+
+        doneTasksPage.appendChild(taskItem);
+      }
+    })
+  } else {
+    const noTasksMessage = document.createElement("p");
+    noTasksMessage.textContent = "You currently do not have any completed tasks. Add a new task to get started!";
+    noTasksMessage.classList.add("text-center", "text-muted", "mt-4");
+    doneTasksPage.appendChild(noTasksMessage);
+  }
+}
+
 // Event listener for adding a new task
 addTaskForm.addEventListener("submit", (event) => {
   event.preventDefault(); // Prevent default form submission
@@ -129,6 +159,7 @@ addTask.addEventListener("click", () => {
   addTasksPage.classList.add("active");
   listAllTasks.classList.remove("active");
   pendingTasksPage.classList.remove("active");
+  doneTasksPage.classList.remove("active");
 });
 
 // Event listener for navigating to the "All Tasks" page
@@ -136,6 +167,7 @@ allTasks.addEventListener("click", () => {
   addTasksPage.classList.remove("active");
   listAllTasks.classList.add("active");
   pendingTasksPage.classList.remove("active");
+  doneTasksPage.classList.remove("active");
 
   listAllTasksPage();
 });
@@ -145,8 +177,19 @@ pendingTasks.addEventListener("click", () => {
   addTasksPage.classList.remove("active");
   listAllTasks.classList.remove("active");
   pendingTasksPage.classList.add("active");
+  doneTasksPage.classList.remove("active");
 
   listAllPendingTasks();
+});
+
+// Event listener for navigating to the "completed Tasks" page
+doneTasks.addEventListener("click", () => {
+  addTasksPage.classList.remove("active");
+  listAllTasks.classList.remove("active");
+  pendingTasksPage.classList.remove("active");
+  doneTasksPage.classList.add("active");
+  
+  listAllCompletedTasks();
 });
 
 // Load tasks and show "All Tasks" page on page load
