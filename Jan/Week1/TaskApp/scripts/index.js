@@ -41,74 +41,53 @@ const listTasks = (type) => {
   listAllTasks.innerHTML = "";
   pendingTasksPage.innerHTML = "";
   doneTasksPage.innerHTML = "";
-  
-  if (tasksArray.length > 0) {
-    if (type === "all") {
-      tasksArray.forEach((task, index) => {
-        const taskItem = document.createElement("div");
-        taskItem.classList.add("task-item", "mb-3", "p-3", "border", "rounded");
-  
-        taskItem.innerHTML = `
-          <h5>${task.title}</h5>
-          <p>${task.description}</p>
-          <p><strong>Deadline:</strong> ${task.deadline}</p>
-          <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
-        `;
-  
+
+  let filteredTasks = [];
+
+  if (type === "all") {
+    filteredTasks = tasksArray;
+  } else if (type === "pending") {
+    filteredTasks = tasksArray.filter((task) => !task.status);
+  } else if (type === "done") {
+    filteredTasks = tasksArray.filter((task) => task.status);
+  }
+
+  if (filteredTasks.length > 0) {
+    filteredTasks.forEach((task) => {
+      const taskItem = document.createElement("div");
+      taskItem.classList.add("task-item", "mb-3", "p-3", "border", "rounded");
+
+      taskItem.innerHTML = `
+        <h5>${task.title}</h5>
+        <p>${task.description}</p>
+        <p><strong>Deadline:</strong> ${task.deadline}</p>
+        <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
+      `;
+
+      if (type === "all") {
         listAllTasks.appendChild(taskItem);
-      });
-    } else if (type === "pending") {
-      tasksArray.filter((task) => {
-        if(task.status === false) {
-          const taskItem = document.createElement("div");
-          taskItem.classList.add("task-item", "mb-3", "p-3", "border", "rounded");
-  
-          taskItem.innerHTML = `
-            <h5>${task.title}</h5>
-            <p>${task.description}</p>
-            <p><strong>Deadline:</strong> ${task.deadline}</p>
-            <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
-          `;
-  
-          pendingTasksPage.appendChild(taskItem);
-        }
-      })
-    } else if(type === "done") {
-      tasksArray.filter((task) => {
-        if(task.status === true) {
-          const taskItem = document.createElement("div");
-          taskItem.classList.add("task-item", "mb-3", "p-3", "border", "rounded");
-  
-          taskItem.innerHTML = `
-            <h5>${task.title}</h5>
-            <p>${task.description}</p>
-            <p><strong>Deadline:</strong> ${task.deadline}</p>
-            <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
-          `;
-  
-          doneTasksPage.appendChild(taskItem);
-        }
-      })
-    }
+      } else if (type === "pending") {
+        pendingTasksPage.appendChild(taskItem);
+      } else if (type === "done") {
+        doneTasksPage.appendChild(taskItem);
+      }
+    });
   } else {
-    if(type === "done") {
-      const noTasksMessage = document.createElement("p");
-      noTasksMessage.textContent = "You currently do not have any completed tasks. Add a new task to get started!";
-      noTasksMessage.classList.add("text-center", "text-muted", "mt-4");
-      doneTasksPage.appendChild(noTasksMessage);
-    } else if(type === "pending") {
-      const noTasksMessage = document.createElement("p");
-      noTasksMessage.textContent = "You currently do not have any pending tasks. Add a new task to get started!";
-      noTasksMessage.classList.add("text-center", "text-muted", "mt-4");
-      pendingTasksPage.appendChild(noTasksMessage);
-    } else {
-      const noTasksMessage = document.createElement("p");
+    const noTasksMessage = document.createElement("p");
+    noTasksMessage.classList.add("text-center", "text-muted", "mt-4");
+
+    if (type === "all") {
       noTasksMessage.textContent = "You currently do not have any tasks. Add a new task to get started!";
-      noTasksMessage.classList.add("text-center", "text-muted", "mt-4");
       listAllTasks.appendChild(noTasksMessage);
+    } else if (type === "pending") {
+      noTasksMessage.textContent = "You currently do not have any pending tasks. Add a new task to get started!";
+      pendingTasksPage.appendChild(noTasksMessage);
+    } else if (type === "done") {
+      noTasksMessage.textContent = "You currently do not have any completed tasks. Add a new task to get started!";
+      doneTasksPage.appendChild(noTasksMessage);
     }
   }
-}
+};
 
 // Event listener for adding a new task
 addTaskForm.addEventListener("submit", (event) => {
