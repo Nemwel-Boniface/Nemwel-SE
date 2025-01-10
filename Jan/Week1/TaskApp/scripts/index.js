@@ -53,7 +53,7 @@ const listTasks = (type) => {
   }
 
   if (filteredTasks.length > 0) {
-    filteredTasks.forEach((task) => {
+    filteredTasks.forEach((task, index) => {
       const taskItem = document.createElement("div");
       taskItem.classList.add("task-item", "mb-3", "p-3", "border", "rounded");
 
@@ -62,7 +62,19 @@ const listTasks = (type) => {
         <p>${task.description}</p>
         <p><strong>Deadline:</strong> ${task.deadline}</p>
         <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
+        <form>
+          <input type="checkbox" id="task-${index}" name="task" value="task">
+          <label for="task-${index}"> Completed?</label><br>
+        </form>
       `;
+
+      const checkbox = taskItem.querySelector(`#task-${index}`);
+      checkbox.addEventListener("change", () => {
+        // Toggle the task status
+        task.status = !task.status;
+        saveTasksToLocalStorage(filteredTasks);
+        listTasks("all");
+      });
 
       if (type === "all") {
         listAllTasks.appendChild(taskItem);
