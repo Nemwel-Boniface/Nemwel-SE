@@ -63,7 +63,7 @@ const listTasks = (type) => {
         <p><strong>Deadline:</strong> ${task.deadline}</p>
         <p><strong>Status:</strong> ${task.status ? "Done" : "Pending"}</p>
         <form>
-          <input type="checkbox" id="task-${index}" name="task" value="task">
+          <input type="checkbox" id="task-${index}" name="task" value="task" ${task.status ? "checked" : ""}>
           <label for="task-${index}"> Completed?</label><br>
         </form>
       `;
